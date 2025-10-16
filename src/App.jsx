@@ -3,6 +3,7 @@ import DataPage from "./pages/DataPage";
 import ChartPage from "./pages/ChartPage";
 import DataCardGrid from "./components/DataCardGrid";
 import DataPageGrid from "./pages/DataPageGrid";
+import DetailPage from "./pages/DetailPage";
 import "./App.css";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <div className="page-wrapper">
             <Routes>
               <Route path="/" element={<DataPageGrid />} />
+              <Route path="/detail/:kode" element={<DetailPage />} />
               <Route path="/chart" element={<ChartPage />} />
             </Routes>
           </div>

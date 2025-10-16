@@ -24,7 +24,7 @@ export default function DataCardGrid({ columns = [], data = [], onRowClick, sort
 
   return (
     <div className="table-outer">
-      <div className="table-header">
+      <div className="table-header" role="region" aria-label="Table header">
         {columns.map((col) => {
           const isSortable = sortable && col.sortable !== false;
           const active = sortState && sortState.key === col.key;
@@ -39,6 +39,8 @@ export default function DataCardGrid({ columns = [], data = [], onRowClick, sort
 
       <div
         className="card-grid"
+        role="list"
+        aria-label="Daftar unit perumahan"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
@@ -53,7 +55,10 @@ export default function DataCardGrid({ columns = [], data = [], onRowClick, sort
             <div
               key={idx}
               className="card"
+              role="listitem"
               tabIndex={0}
+              aria-label={`${row.kode} - ${row.nama}`}
+              aria-describedby={row.harga ? `harga-${idx}` : undefined}
               onClick={() => onRowClick && onRowClick(row)}
               onKeyDown={(e) => e.key === "Enter" && onRowClick && onRowClick(row)}
               style={{
@@ -85,6 +90,7 @@ export default function DataCardGrid({ columns = [], data = [], onRowClick, sort
 
               {row.harga && (
                 <div
+                  id={`harga-${idx}`}
                   className="card-footer"
                   style={{
                     borderTop: "1px solid #eee",

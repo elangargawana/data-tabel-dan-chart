@@ -5,6 +5,7 @@ import Pagination from "../components/Pagination";
 import { generateUnits } from "../data/mockUnits";
 import { useNavigate } from "react-router-dom";
 import { toCSV } from "../utils/csv";
+import FilterModal from "../components/FilterModal";
 
 const columns = [
   { key: "kode", label: "Kode Unit" },
@@ -26,6 +27,7 @@ export default function DataPageGrid() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(30); // tampilkan 30 kartu per halaman
   const [sortState, setSortState] = useState(null);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const navigate = useNavigate();
 
   // Ambil opsi filter unik
@@ -68,42 +70,96 @@ export default function DataPageGrid() {
   return (
     <div className="page-wrapper">
       <div style={{ padding: 16 }}>
-        <div className="card" style={{ marginBottom: 16 }}>
-          <h2>Daftar Unit Perumahan - Jawa Tengah (Grid View)</h2>
-          <p style={{ marginTop: 0, color: "var(--muted)" }}>Tampilkan daftar unit perumahan dalam format kartu grid, lengkap dengan filter dan pencarian.</p>
+        <div className="card card-header" style={{ marginBottom: 16 }}>
+          <h2
+            style={{
+              margin: 0,
+              padding: 0,
+              lineHeight: 1,
+            }}
+          >
+            Daftar Unit Perumahan - Jawa Tengah
+          </h2>
         </div>
         <div className="card">
           {/* Filter + Aksi */}
+          {/* Search + Filter + Export + Chart */}
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: 12,
+              gap: 12,
+              marginBottom: 16,
+              flexWrap: "wrap",
             }}
           >
-            <Filters search={search} onSearch={setSearch} statusOptions={statusOptions} kabOptions={kabOptions} filters={filters} onChange={setFilters} />
-            <div className="actions" style={{ display: "flex", gap: 8 }}>
-              <button
-                className="btn icon"
-                onClick={() => {
-                  const csv = toCSV(sorted, columns);
-                  const blob = new Blob([csv], { type: "text/csv" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = "units.csv";
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }}
-              >
-                ⬇️ Export CSV
-              </button>
+            {/* Search box */}
+            <input
+              type="text"
+              placeholder="Cari kode unit atau nama proyek..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: 240,
+                padding: "8px 12px",
+                border: "1px solid #ccc",
+                borderRadius: 6,
+                fontSize: 14,
+              }}
+            />
 
-              <button className="btn primary icon" onClick={() => navigate("/chart")}>
-                📊 Lihat Chart
-              </button>
-            </div>
+            {/* Tombol Filter */}
+            <button
+              className="btn icon"
+              onClick={() => setShowFilterModal(true)}
+              style={{
+                background: "#6c63ff",
+                color: "white",
+                borderRadius: 6,
+                padding: "8px 12px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              🔽 Filter
+            </button>
+
+            {/* Tombol Export CSV */}
+            <button
+              className="btn icon"
+              onClick={() => {
+                const csv = toCSV(sorted, columns);
+                const blob = new Blob([csv], { type: "text/csv" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "units.csv";
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              style={{
+                borderRadius: 6,
+                padding: "8px 12px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              ⬇️ Export CSV
+            </button>
+
+            {/* Tombol Chart */}
+            <button
+              className="btn primary icon"
+              onClick={() => navigate("/chart")}
+              style={{
+                borderRadius: 6,
+                padding: "8px 12px",
+                background: "#28a745",
+                color: "white",
+                whiteSpace: "nowrap",
+              }}
+            >
+              📊 Lihat Chart
+            </button>
           </div>
 
           {/* Grid Cards */}
@@ -128,7 +184,7 @@ export default function DataPageGrid() {
                   setSortState(s);
                   setPage(1);
                 }}
-                onRowClick={(r) => alert(`Klik ${r.kode} - ${r.nama} (${r.status})`)}
+                onRowClick={(r) => navigate(`/detail/${r.kode}`)}
               />
 
               {/* Pagination */}
@@ -159,6 +215,7 @@ export default function DataPageGrid() {
           )}
         </div>
       </div>
+      <FilterModal show={showFilterModal} onClose={() => setShowFilterModal(false)} search={search} onSearch={setSearch} filters={filters} onChange={setFilters} statusOptions={statusOptions} kabOptions={kabOptions} />
     </div>
   );
 }

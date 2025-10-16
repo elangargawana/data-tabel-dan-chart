@@ -85,7 +85,7 @@ export default function DataTable({ columns, data, rowHeight = 48, height = 400,
 
   return (
     <div className="table-outer">
-      <div className="table" role="table" aria-rowcount={data.length} style={{ minWidth: totalWidth }}>
+      <div className="table" role="table" aria-label="Daftar unit perumahan" aria-rowcount={data.length} style={{ minWidth: totalWidth }}>
         {header}
         <div className="tbody" role="rowgroup">
           {isMobile ? (
